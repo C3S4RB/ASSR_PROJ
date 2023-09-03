@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  
+    <title>Estado del Aforo</title>
+    <style>
+        .site-footer {
+            background-color: #4b0082;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .banner {
+            background-color: #4b0082;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .video-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .video-container iframe {
+            width: 100%;
+            max-width: 800px;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .page-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #73c6b6, #ffffff);
+        }
+        
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #73c6b6, #ffffff);
+        }
+
+        .container {
+            max-width: 800px;
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #4b0082;
+            margin-bottom: 20px;
+        }
+
+        #localesButton, button {
+            background-color: #800080;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #localesButton:hover, button:hover {
+            background-color: #9932cc;
+            transform: scale(1.05);
+        }
+
+        .buttons-container {
+            display: none;
+            justify-content: center;
+        }
+
+        .local-info {
+            display: none;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .box {
+            margin: 10px 0;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        span {
+            font-weight: bold;
+            color: #800080;
+        }
+
+        #volverButton {
+            background-color: #800080;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #volverButton:hover {
+            background-color: #9932cc;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <script>
+        function actualizarDatos(local) {
+    console.log('Actualizando datos...');
+    fetch('obtener_datos.php?local=' + local)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Datos actualizados:', data);
+
+ 
+
+            if (local === 'local1' || local === 'FADCOM') {
+                document.getElementById('LocalNombre').textContent = data.local1.Nombre;
+                document.getElementById('LocalAforoMaximo').textContent = data.local1.Aforomaximo;
+                document.getElementById('LocalAforoDisponible').textContent = data.local1.Aforodisponible;
+            } else if (local === 'local2' || local === 'CELEX') {
+                document.getElementById('LocalNombre').textContent = data.local2.Nombre;
+                document.getElementById('LocalAforoMaximo').textContent = data.local2.Aforomaximo;
+                document.getElementById('LocalAforoDisponible').textContent = data.local2.Aforodisponible;
+            }
+        });
+        }
+
+   /* window.onload = function() {
+    const dominioOficial = "aplicacionaforo.000webhostapp.com";
+    const dominioActual = window.location.hostname;
+
+    if (dominioActual !== dominioOficial) {
+        document.body.innerHTML = "<h1>URL no válida. Acceso denegado.</h1>";
+    }
+};*/
+        function cargarInfoLocal(local) {
+            const localInfo = document.querySelector('.local-info');
+            localInfo.style.display = 'block';
+            actualizarDatos(local);
+        }
+
+        function mostrarBotonesLocales() {
+            const localesButton = document.getElementById('localesButton');
+            const buttonsContainer = document.querySelector('.buttons-container');
+            localesButton.style.display = 'none';
+            buttonsContainer.style.display = 'flex';
+        }
+
+        function ocultarAforoLocal() {
+            const localInfo = document.querySelector('.local-info');
+            localInfo.style.display = 'none';
+        }
+
+        // Simulación de la actualización de datos cada 5 segundos
+        setInterval(() => {
+            const localInfo = document.querySelector('.local-info');
+            if (localInfo.style.display === 'block') {
+                const nombreLocal = document.getElementById('LocalNombre').textContent;
+                actualizarDatos(nombreLocal);
+            }
+        }, 500);
+
+        function cargarInfoLocal(local) {
+            // Aquí puedes actualizar el contenido de los elementos según el local seleccionado
+            if (local === 'local1') {
+                document.getElementById('LocalNombre').textContent = 'FADCOM';
+                //document.getElementById('LocalAforoMaximo').textContent = '100 personas';
+                document.getElementById('LocalImagen').src = 'img/fadcom.png';
+            } else if (local === 'local2') {
+                document.getElementById('LocalNombre').textContent = 'CELEX';
+                //document.getElementById('LocalAforoMaximo').textContent = '150 personas';
+                document.getElementById('LocalImagen').src = 'img/celex.png';
+            }
+            
+            // Mostrar la información y la imagen actualizada
+            document.querySelector('.local-info').style.display = 'block';
+        }
+        
+
+    </script>
+</head>
+<body>
+
+    <div class="banner">
+        <h2>ProyectoASSR</h2>
+    </div>
+    <div class="page-container">
+    <div class="container">
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/LH4id9JY9u4?si=eaC5wEt54KgUaMzW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <h1>Aforos de restaurantes de comida</h1>
+        <button id="localesButton" onclick="mostrarBotonesLocales()">Locales Disponibles</button>
+        <div class="buttons-container" style="display: none;">
+            <button onclick="cargarInfoLocal('local1')">FADCOM  </button>
+            <button onclick="cargarInfoLocal('local2')">CELEX</button>
+            <!-- Agregar más botones aquí si es necesario -->
+        </div>
+        <div class="local-info" style="display: none;">
+         
+            <div class="box">
+                <img id="LocalImagen" src="" alt="Imagen del local"  width="300" height="200">
+            </div>
+               
+            <div class="box">
+                <p>Nombre del Local: <span id="LocalNombre"></span></p>
+            </div>
+            <div class="box">
+                <p>Aforo Máximo: <span id="LocalAforoMaximo"></span></p>
+            </div>
+            <div class="box">
+                <p>Aforo Disponible: <span id="LocalAforoDisponible"></span></p>
+            </div>
+           
+            <button id="volverButton" onclick="ocultarAforoLocal()">Volver</button>
+        </div>
+    </div>
+
+    <footer style="background-color: #4b0082; color: white; text-align: center; padding: 10px 0;">
+        &copy; 2023 ProyectoASSR. Todos los derechos reservados.
+    </footer>
+  
+</body>
+
+</html>
